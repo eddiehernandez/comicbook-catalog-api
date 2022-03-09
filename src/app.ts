@@ -6,7 +6,7 @@ const main = () => {
     const port: number = parseInt(<string> process.env.PORT, 10) || 3000;
 
     app.get('/', (req: Request, res: Response) => {
-        res.send('hello world!');
+        res.send(`Hello world! Server running on ${port}.`);
     });
 
     app.listen(port, () => {
