@@ -1,7 +1,34 @@
-npm init -y // create starter project
+// Create starter project in project folder
+    npm init -y
 
-git init
-git add .
-git commit -m "first commit"
-git remote add origin https://github.com/eddiehernandez/comicbook-catalog-api.git
-git push -u origin master
+// Initialize GitHub
+// -Step 1. Create GitHub repo
+// -Step 2. Run the following in folder via terminal
+    git init
+    git add .
+    git commit -m "first commit"
+    git remote add origin https://github.com/eddiehernandez/comicbook-catalog-api.git
+    git push -u origin master
+
+// Add dependencies
+    npm i express dotenv
+    npm i -D typescript nodemon ts-node
+    npm i -D @types/node @types/express
+
+// Add the following scripts to package.json
+  "scripts": {
+    "build": "tsc -p .",
+    "dev": "nodemon src/app.ts",
+    "start": "node dist/app.js"
+  },
+
+// Initialize tsconfig
+    sudo npm i -g typescript
+    tsc --version
+    tsc --init
+
+// In tsconfig.json set the following:
+    "outDir": "./dist",
+    "rootDir": "./src", 
+    "moduleResolution": "node",
+    "baseUrl": "./src",
