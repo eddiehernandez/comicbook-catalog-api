@@ -5,6 +5,7 @@
 // -Step 1. Create GitHub repo
 // -Step 2. Run the following in folder via terminal
     git init
+    npx gitignore node
     git add .
     git commit -m "first commit"
     git remote add origin https://github.com/eddiehernandez/comicbook-catalog-api.git
