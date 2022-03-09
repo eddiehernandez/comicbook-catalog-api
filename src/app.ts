@@ -1,5 +1,6 @@
 import 'dotenv';
 import express, {Request, Response, NextFunction, Application} from 'express';
+import routes from './routes/index';
 
 const main = () => {
     const app: Application = express();
@@ -12,6 +13,8 @@ const main = () => {
     app.listen(port, () => {
         console.log(`Server running on port ${port}`);
     });
+
+    app.use(routes);
 
 }
 
