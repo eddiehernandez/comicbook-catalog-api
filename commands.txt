@@ -1,0 +1,7 @@
+npm init -y // create starter project
+
+git init
+git add .
+git commit -m "first commit"
+git remote add origin https://github.com/eddiehernandez/comicbook-catalog-api.git
+git push -u origin master
