@@ -3,7 +3,7 @@ import IComic from 'models/IComic';
 import IComicsRepo from 'repos/IComicsRepo';
 
 
-export default class GetAllComicsController {
+export default class GetComicByIdController {
 
     private _comicsRepo: IComicsRepo;
 
@@ -11,9 +11,9 @@ export default class GetAllComicsController {
         this._comicsRepo = comicsRepo;
     }
 
-    public run (): IComic[] {
+    public run (id: string): IComic {
 
-        return this._comicsRepo.getAllComics();
+        return this._comicsRepo.getComicById(id);
     
     }
 }

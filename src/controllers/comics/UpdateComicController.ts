@@ -1,19 +1,20 @@
 
+import { Request, Response } from 'express';
 import IComic from 'models/IComic';
 import IComicsRepo from 'repos/IComicsRepo';
 
-
-export default class GetAllComicsController {
+export default class UpdateComicController {
 
     private _comicsRepo: IComicsRepo;
+
 
     constructor (comicsRepo: IComicsRepo) {
         this._comicsRepo = comicsRepo;
     }
 
-    public run (): IComic[] {
+    public run (id: string, comic: IComic): IComic {
 
-        return this._comicsRepo.getAllComics();
-    
+        return this._comicsRepo.updateComic(id, comic);
+
     }
 }

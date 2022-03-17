@@ -1,16 +1,9 @@
-import GetAllComicsController from '../controllers/comics/GetAllComicsController';
+import { createComicController, deleteComicController, getAllComicsController, getComicByIdController, updateComicController } from '../controllers/comics';
 import { Router, Request, Response } from 'express';
 import IComic from 'models/IComic';
-import { ComicsRepoInMem } from '../repos/ComicsRepoInMem';
-import IComicsRepo from 'repos/IComicsRepo';
+
 
 const router: Router = Router();
-const comicsRepo: IComicsRepo = new ComicsRepoInMem();
-const getAllComicsController = new GetAllComicsController(comicsRepo);
-
-// router.get('/', (req: Request, res: Response) => {
-//     res.json(comicsRepo.getAllComics());
-// });
 
 router.get('/', (req: Request, res: Response) => {
 
@@ -18,42 +11,86 @@ router.get('/', (req: Request, res: Response) => {
 
 });
 
-router.post('/', (req: Request, res: Response) => {
-    console.log(req.body);
-
-    //validate request body is not missing anything
-    const body = req.body;
-    const issueNumber: string = req.body.issueNumber;
-    const title: string = req.body.title;
-    const writer: string = req.body.writer;
-    const illustrator: string = req.body.illustrator;
-    const publisher: string = req.body.publisher;
-
-    if (!issueNumber || !title || !writer || !illustrator || !publisher)
-        return res.status(400).json({
-            message: 'Bad request.  Missing issueNumber, title, writer, illustrator or publishier.'
-        });
-
+router.get('/:id', (req: Request, res: Response) => {
+    const id : string = req.params.id;
     let comic: IComic;
 
     try {
-        comic = req.body;
-        console.log(comic);
+        comic = getComicByIdController.run(id);
+        if (!comic) return res.status(404).json({message: `Comic ${id} not found.`});
+        return res.json(comic);        
     }
     catch (err){
-        return res.status(400).json(err);
+        return res.status(500).json(err);
     }
-    
-    //create Comic model from request body (TODO: is this the best way to create this object?)
-    // let comic = new Comic('', issueNumber, title, writer, illustrator, publisher);
-    
-    //call controller, pass in Comic object and repo to add it to
-    const response: IComic = comicsRepo.addComic(comic);
-    res.status(201).json(response);
 
-    //if I get a response then assume it was created, else handle an exception
-})
+});
 
-// router.post('/', (req, res) => CreateComicController.run(req, res));
+router.delete('/:id', (req: Request, res: Response) => {
+
+    try {
+        const id : string = req.params.id;
+
+        //validate comic you are trying to delete exists
+        if (!getComicByIdController.run(id)) 
+            return res.status(404).json({message: `Comic ${id} not found.`});
+
+        //proceed to delete comicbook
+        deleteComicController.run(id);
+        return res.sendStatus(204);
+    }
+    catch (err){
+        return res.status(500).json(err);
+    }
+
+});
+
+router.post('/', (req: Request, res: Response) => {
+    
+    try {
+
+        //validate request body is not missing anything
+        const body = req.body;
+        if (!body.issueNumber || !body.title || !body.writer || !body.illustrator || !body.publisher)
+            return res.status(400).json({
+                message: 'Bad request.  Missing issueNumber, title, writer, illustrator or publishier.'
+            });
+
+        let comic: IComic = body;
+        const response = createComicController.run(comic);
+        return res.status(201).json(response);
+    }
+    catch (err){
+        return res.status(500).json(err);
+    }
+
+});
+
+router.put('/:id', (req: Request, res: Response) => {
+    
+    try {
+        const id : string = req.params.id;
+
+        const body = req.body;
+        if (!body.issueNumber || !body.title || !body.writer || !body.illustrator || !body.publisher || !body.id)
+            return res.status(400).json({
+                message: 'Bad request.  Missing issueNumber, title, writer, illustrator, publishier or id.'
+            });
+
+        const comic: IComic = body;
+
+        //validate comic you are trying to delete exists
+        if (!getComicByIdController.run(id)) 
+            return res.status(404).json({message: `Comic ${id} not found.`});
+
+        //proceed to delete comicbook
+        const response = updateComicController.run(id, comic);
+        return res.json(response);
+    }
+    catch (err){
+        return res.status(500).json(err);
+    }
+
+});
 
 export default router;

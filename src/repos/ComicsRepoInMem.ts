@@ -2,12 +2,12 @@ import IComic from "models/IComic";
 import IComicsRepo from "./IComicsRepo";
 
 
-export class ComicsRepoInMem implements IComicsRepo {
+export default class ComicsRepoInMem implements IComicsRepo {
 
-    comics: IComic[];
+    private _comics: IComic[];
 
     constructor (){
-        this.comics = new Array();
+        this._comics = new Array();
         
         // const comic1 = new Comic('1', '1', 'Amazing Spiderman', 'Stan Lee', 'Some Dude', 'Marvel');
         // const comic2 = new Comic('2', '100', 'Detective', 'Bob Kane', 'Some Other Dude', 'DC');
@@ -29,23 +29,51 @@ export class ComicsRepoInMem implements IComicsRepo {
             publisher: 'DC Comics'            
         };
 
-        this.comics.push(comic1);
-        this.comics.push(comic2);
+        this._comics.push(comic1);
+        this._comics.push(comic2);
 
     }
 
     getAllComics(): IComic[] {
 
-        return this.comics;
+        return this._comics;
 
     }
 
     addComic(comic: IComic): IComic {
         const uniqueId = new Date().getTime();
         comic.id = uniqueId.toString();
-        this.comics.push(comic);
+        this._comics.push(comic);
         return comic;
     }
 
+    getComicById(id: string): IComic {
+        return this._comics.filter(x => x.id == id)[0];       
+    }
+
+    deleteComic(id: string): void {
+        if (!this.getComicById(id))
+            throw `Comic ${id} not found!`;
+            
+        this._comics = this._comics.filter(x => x.id != id);
+    }
+
+    updateComic(id: string, comic: IComic): IComic {
+
+        if ((!id) || (!comic) || (!comic.id))
+            throw 'Missing id and/or comic to update';
+
+        if (id != comic.id)
+            throw 'Request id does not equal comic id!';
+
+        const existingComic = this.getComicById(id);
+        if (!existingComic)
+            throw `Comic ${comic.id} not found!`;
+
+        this.deleteComic(id);
+        this._comics.push(comic);
+        return comic;
+
+    }
 
 }
