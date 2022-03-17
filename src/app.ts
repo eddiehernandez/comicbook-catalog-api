@@ -1,6 +1,8 @@
 import 'dotenv';
 import express, {Request, Response, NextFunction, Application} from 'express';
 import routes from './routes';
+import swaggerUi from 'swagger-ui-express';
+import * as swaggerDocument from './swagger.json';
 
 const main = () => {
     const app: Application = express();
@@ -10,9 +12,13 @@ const main = () => {
     app.use(express.urlencoded({ extended: false }));
     app.use(routes);
 
+    app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
     app.get('/', (req: Request, res: Response) => {
         res.send(`Hello world!! Server running on ${port}.`);
     });
+
+    
 
     app.listen(port, () => {
         console.log(`Server running on port ${port}`);

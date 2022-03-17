@@ -1,0 +1,26 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Comicbook Catalog API",
+        "author": "Eddie Hernandez",
+        "contact": {
+            "name": "Eddie Hernandez",
+            "email": "eddie.hernandez.us@gmail.com"
+        },
+        "description": "A simple comicbook API to manage your vintage collection."
+
+    },
+    "servers": [
+        {
+            "url": "/",
+            "description": "Local Dev or from Heroku"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Comics",
+            "description": "API for comics in the platform."
+        }
+    ]
+}

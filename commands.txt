@@ -12,10 +12,11 @@
     git push -u origin master
 
 // Add dependencies
-    npm i express dotenv
+    npm i express dotenv swagger-ui-express
     npm i -D typescript ts-node
     npm i -D @types/node @types/express
     npm i -D ts-node-dev
+    npm install @types/swagger-ui-express
 
 // Add the following scripts to package.json
   "scripts": {
