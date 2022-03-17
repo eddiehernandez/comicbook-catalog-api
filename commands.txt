@@ -13,13 +13,14 @@
 
 // Add dependencies
     npm i express dotenv
-    npm i -D typescript nodemon ts-node
+    npm i -D typescript ts-node
     npm i -D @types/node @types/express
+    npm i -D ts-node-dev
 
 // Add the following scripts to package.json
   "scripts": {
     "build": "tsc -p .",
-    "dev": "nodemon src/app.ts",
+    "dev": "ts-node-dev --respawn --pretty --transpile-only src/app.ts",    
     "start": "node dist/app.js"
   },
 
