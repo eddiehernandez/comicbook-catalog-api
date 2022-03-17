@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import comics from './Comics';
+import comics from '../routes/Comics';
 
 const router = Router();
 router.use('/comics', comics);
