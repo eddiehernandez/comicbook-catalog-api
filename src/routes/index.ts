@@ -1,7 +1,8 @@
 import {Router} from 'express';
-import comics from '../routes/Comics';
+import router from './BlahComicst';
 
-const router = Router();
-router.use('/comics', comics);
 
-export default router;
+const routert = Router();
+routert.use('/comics', router);
+
+export default routert;
