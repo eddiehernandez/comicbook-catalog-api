@@ -3,15 +3,15 @@ import { Router, Request, Response } from 'express';
 import IComic from 'models/IComic';
 
 
-const router: Router = Router();
+const comicsRouter: Router = Router();
 
-router.get('/', (req: Request, res: Response) => {
+comicsRouter.get('/', (req: Request, res: Response) => {
 
     res.json(getAllComicsController.run());
 
 });
 
-router.get('/:id', (req: Request, res: Response) => {
+comicsRouter.get('/:id', (req: Request, res: Response) => {
     const id : string = req.params.id;
     let comic: IComic;
 
@@ -26,7 +26,7 @@ router.get('/:id', (req: Request, res: Response) => {
 
 });
 
-router.delete('/:id', (req: Request, res: Response) => {
+comicsRouter.delete('/:id', (req: Request, res: Response) => {
 
     try {
         const id : string = req.params.id;
@@ -45,7 +45,7 @@ router.delete('/:id', (req: Request, res: Response) => {
 
 });
 
-router.post('/', (req: Request, res: Response) => {
+comicsRouter.post('/', (req: Request, res: Response) => {
     
     try {
 
@@ -66,7 +66,7 @@ router.post('/', (req: Request, res: Response) => {
 
 });
 
-router.put('/:id', (req: Request, res: Response) => {
+comicsRouter.put('/:id', (req: Request, res: Response) => {
     
     try {
         const id : string = req.params.id;
@@ -93,4 +93,4 @@ router.put('/:id', (req: Request, res: Response) => {
 
 });
 
-export default router;
+export default comicsRouter;
