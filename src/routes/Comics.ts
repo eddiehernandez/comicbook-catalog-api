@@ -1,14 +1,23 @@
 import { createComicController, deleteComicController, getAllComicsController, getComicByIdController, updateComicController } from '../controllers/comics';
 import { Router, Request, Response } from 'express';
 import IComic from 'models/IComic';
+import IErrorResponse from 'models/IError';
 
 
 const comicsRouter: Router = Router();
 
 comicsRouter.get('/', (req: Request, res: Response) => {
+    try {
+        return res.json(getAllComicsController.run());
 
-    res.json(getAllComicsController.run());
-
+    }
+    catch (err){
+        const errorResponse = {
+            code: '500',
+            message: err
+        };
+        return res.status(500).json(errorResponse);
+    }
 });
 
 comicsRouter.get('/:id', (req: Request, res: Response) => {

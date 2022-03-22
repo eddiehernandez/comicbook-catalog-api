@@ -1,0 +1,146 @@
+openapi: '3.0.2'
+info:
+  title: Comicbook Catalog API
+  version: '1.0'
+  description: A simple Comicbook API to manage your valuable collection!
+  contact:
+    name: Eddie Hernandez
+    email: eddie.hernandez.us@gmail.com
+servers:
+  - url: /
+    description: Heroku or Local Testing
+tags:
+  - name: Comics
+
+paths:
+  /comics:
+    get:
+      description: Get all Comicbooks.
+      tags: 
+      - Comics
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comic'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /comics/{id}:
+    get:
+      description: Get a specific Comicbook by its id.
+      tags: 
+      - Comics
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The Comicbook id assigned by API when created.
+          schema:
+            type: string
+            example: xxx-xxx-xxx-xxx
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Comic'
+        '404':
+          description: Not Found
+    delete:
+      description: Delete a specific Comicbook by id.
+      tags:
+      - Comics
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The Comicbook id assigned by API when created.
+          schema:
+            type: string
+            example: xxx-xxx-xxx-xxx
+      responses:
+        '204':
+          description: Success
+    put:
+      description: Update/replace a specific Comicbook by its id.
+      tags: 
+      - Comics
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Comic'
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The Comicbook id assigned by API when created.
+          schema:
+            type: string
+            example: xxx-xxx-xxx-xxx
+        
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Comic'
+   
+
+
+components:
+
+  # Reusable schemas (data models)
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: 12345
+        message:
+          type: string
+          example: Unexpected error occurred
+    Comic:
+      type: object
+      description: Comicbook model
+      properties:
+        id:
+          type: string
+          example: xxx-xxx-xxx-xxx
+        issueNumber:
+          type: string
+          example: 100
+        title:
+          type: string
+          example: The Amazing Spiderman
+        writer:
+          type: string
+          example: Stan Lee
+        illustrator: 
+          type: string
+          example: Todd McFarlane
+        publisher:
+          type: string
+          example: Marvel
+
+  #Reusable responses
+  responses:
+    500InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            type: object
+            $ref: '#/components/schemas/ErrorResponse'
