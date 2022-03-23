@@ -11,9 +11,9 @@ export default class DeleteComicController {
         this._comicsRepo = comicsRepo;
     }
 
-    public run (id: string): void {
+    public run (id: string, userId: string): void {
 
-        return this._comicsRepo.deleteComic(id);
+        return this._comicsRepo.deleteComic(id, userId);
 
     }
 }

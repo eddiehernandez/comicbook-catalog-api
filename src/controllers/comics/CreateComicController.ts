@@ -12,9 +12,9 @@ export default class CreateComicController {
         this._comicsRepo = comicsRepo;
     }
 
-    public run (comic: IComic): IComic {
+    public run (comic: IComic, userId: string): IComic {
 
-        return this._comicsRepo.addComic(comic);
+        return this._comicsRepo.addComic(comic, userId);
 
     }
 }

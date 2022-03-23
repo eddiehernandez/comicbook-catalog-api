@@ -1,12 +1,11 @@
 import CreateComicController from "./CreateComicController";
-import ComicsRepoInMem from '../../repos/ComicsRepoInMem'
-import IComicsRepo from "repos/IComicsRepo";
 import GetAllComicsController from "./GetAllComicsController";
 import GetComicByIdController from "./GetComicByIdController";
 import DeleteComicController from './DeleteComicController';
 import UpdateComicController from "./UpdateComicController";
+import { comicsRepo } from "../../repos";
 
-const comicsRepo: IComicsRepo = new ComicsRepoInMem();
+// initialize application comics controllers
 const createComicController = new CreateComicController(comicsRepo);
 const getAllComicsController = new GetAllComicsController(comicsRepo);
 const getComicByIdController = new GetComicByIdController(comicsRepo);

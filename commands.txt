@@ -21,6 +21,7 @@
     npm install @types/yamljs
     npm install bcryptjs jsonwebtoken
     npm i -D @types/jsonwebtoken @types/bcryptjs
+    npm i -D dotenv @types/dotenv
 
 // Add the following scripts to package.json
   "scripts": {

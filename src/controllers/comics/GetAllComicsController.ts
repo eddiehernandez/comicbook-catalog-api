@@ -11,9 +11,9 @@ export default class GetAllComicsController {
         this._comicsRepo = comicsRepo;
     }
 
-    public run (): IComic[] {
+    public run (userId: string): IComic[] {
 
-        return this._comicsRepo.getAllComics();
+        return this._comicsRepo.getAllComics(userId);
     
     }
 }
