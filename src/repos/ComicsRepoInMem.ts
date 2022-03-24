@@ -8,9 +8,6 @@ export default class ComicsRepoInMem implements IComicsRepo {
 
     constructor (){
         this._comics = new Array();
-        
-        // const comic1 = new Comic('1', '1', 'Amazing Spiderman', 'Stan Lee', 'Some Dude', 'Marvel');
-        // const comic2 = new Comic('2', '100', 'Detective', 'Bob Kane', 'Some Other Dude', 'DC');
 
         const comic1: IComic = {
             id: '1',
