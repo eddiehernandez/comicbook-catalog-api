@@ -6,10 +6,14 @@ info:
   contact:
     name: Eddie Hernandez
     email: eddie.hernandez.us@gmail.com
+security:
+  - BearerAuth: []
+
 servers:
   - url: /
     description: Heroku or Local Testing
 tags:
+  - name: Users
   - name: Comics
 
 paths:
@@ -97,13 +101,16 @@ paths:
                 type: object
                 $ref: '#/components/schemas/Comic'
    
-
-
 components:
+  # Security schemes
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
 
   # Reusable schemas (data models)
   schemas:
-    ErrorResponse:
+    Error:
       type: object
       properties:
         code:
@@ -143,4 +150,4 @@ components:
         application/json:
           schema:
             type: object
-            $ref: '#/components/schemas/ErrorResponse'
+            $ref: '#/components/schemas/Error'
