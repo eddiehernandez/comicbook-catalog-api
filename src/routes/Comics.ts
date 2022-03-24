@@ -27,7 +27,7 @@ comicsRouter.get('/', (req: Request, res: Response) => {
 comicsRouter.get('/:id', (req: Request, res: Response) => {
 
     const id : string = req.params.id;
-    let comic: IComic;
+    let comic: IComic | undefined;
 
     try {
         const userId: string = res.locals.jwt.email;

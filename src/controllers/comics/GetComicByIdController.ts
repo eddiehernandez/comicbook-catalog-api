@@ -11,7 +11,7 @@ export default class GetComicByIdController {
         this._comicsRepo = comicsRepo;
     }
 
-    public run (id: string, userId: string): IComic {
+    public run (id: string, userId: string): IComic | undefined {
 
         return this._comicsRepo.getComicById(id, userId);
     
