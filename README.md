@@ -1,7 +1,18 @@
-# Comicbook Catalog API
-Provides a comicbook store or individual a simple platform to manage their comicbook collection.
+# Comicbook Catalog API (WIP)
+A simple Comicbook API to manage your valuable collection!
 
-Live Demo:
+Features Used:
+* Typescript
+* Swagger UI Documentation (or other?)
+* JWT Authentication
+* Logging?
+* PROD/DEV Settings?
+* Database Repos: InMemory (default), MongoDb (coming soon), MySQL (coming soon)
+* Jest Test Suite (coming soon)
+* Versioning (coming soon)
+* CI/CD Heroku (pipelines coming soon)
+
+Heroku Live Demo:
 https://comicbook-catalog-api.herokuapp.com/
 
 
