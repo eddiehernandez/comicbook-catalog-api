@@ -5,7 +5,7 @@ import usersRouter from './users';
 
 const router = Router();
 
-router.use('/api/comics', extractJWT, comicsRouter);
-router.use('/api/users', usersRouter);
+router.use('/comics', extractJWT, comicsRouter);
+router.use('/users', usersRouter);
 
 export default router;

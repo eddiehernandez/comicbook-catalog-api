@@ -17,6 +17,91 @@ tags:
   - name: Comics
 
 paths:
+  /users/register:
+    post:
+      description: Register a new User.
+      tags:
+      - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: joe@me.com
+                password:
+                  type: string
+                  example: test123              
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: joe@me.com
+        '400':
+          $ref: '#/components/responses/400BadRequestError'
+        '409':
+          $ref: '#/components/responses/409ConflictError'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+  /users/login:
+    post:
+      description: Log in an existing User.  Upon successful login, returns user and bearer token.
+      tags:
+      - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: joe@me.com
+                password:
+                  type: string
+                  example: test123
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                description: User and Bearer Token
+                properties:
+                  message:
+                    type: string
+                    example: Authentication successful
+                  token:
+                    type: string
+                    example: xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+                  user:
+                    type: object
+                    properties:
+                      email:
+                        type: string
+                        example: john@me.com
+        '400':
+          $ref: '#/components/responses/400BadRequestError'
+        '401':
+          $ref: '#/components/responses/401UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/404NotFoundError'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+
   /comics:
     get:
       description: Get all Comicbooks.
@@ -28,9 +113,44 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Comic'
+                type: object
+                description: Search results
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comic'
+                  count:
+                    type: number
+                    example: 1
+        '401':
+          $ref: '#/components/responses/401UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
+    post:
+      description: Create a new Comic
+      tags: 
+      - Comics
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              $ref: '#/components/schemas/Comic'        
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Comic'
+        '400':
+          $ref: '#/components/responses/400BadRequestError'
+        '401':
+          $ref: '#/components/responses/401UnauthorizedError'
         '500':
           $ref: '#/components/responses/500InternalServerError'
 
@@ -55,8 +175,13 @@ paths:
               schema:
                 type: object
                 $ref: '#/components/schemas/Comic'
+        '401':
+          $ref: '#/components/responses/401UnauthorizedError'
         '404':
-          description: Not Found
+          $ref: '#/components/responses/404NotFoundError'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
     delete:
       description: Delete a specific Comicbook by id.
       tags:
@@ -72,6 +197,13 @@ paths:
       responses:
         '204':
           description: Success
+        '401':
+          $ref: '#/components/responses/401UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/404NotFoundError'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
+
     put:
       description: Update/replace a specific Comicbook by its id.
       tags: 
@@ -100,6 +232,14 @@ paths:
               schema:
                 type: object
                 $ref: '#/components/schemas/Comic'
+        '400':
+          $ref: '#/components/responses/400BadRequestError'
+        '401':
+          $ref: '#/components/responses/401UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/404NotFoundError'
+        '500':
+          $ref: '#/components/responses/500InternalServerError'
    
 components:
   # Security schemes
@@ -118,13 +258,14 @@ components:
           example: 12345
         message:
           type: string
-          example: Unexpected error occurred
+          example: Error message goes here
     Comic:
       type: object
       description: Comicbook model
       properties:
         id:
           type: string
+          description: not required for POST
           example: xxx-xxx-xxx-xxx
         issueNumber:
           type: string
@@ -144,6 +285,34 @@ components:
 
   #Reusable responses
   responses:
+    400BadRequestError:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            type: object
+            $ref: '#/components/schemas/Error'  
+    401UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            type: object
+            $ref: '#/components/schemas/Error' 
+    404NotFoundError:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            type: object
+            $ref: '#/components/schemas/Error' 
+    409ConflictError:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            type: object
+            $ref: '#/components/schemas/Error' 
     500InternalServerError:
       description: Internal Server Error
       content:

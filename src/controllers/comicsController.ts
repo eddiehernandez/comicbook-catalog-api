@@ -31,7 +31,7 @@ const getAllComicsHandler = ( req: Request, res: Response) => {
 
         const comicsResponse = comicsRepo.getAllComics(userId);
         return res.json({
-            comics: comicsResponse,
+            data: comicsResponse,
             count: comicsResponse.length
         });
 

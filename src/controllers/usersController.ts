@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { usersRepo } from '../repos';
 import bcryptjs from 'bcryptjs';
 import IUser from 'models/IUser';
-import config from 'config';
+import config from '../config';
 import jwt from 'jsonwebtoken';
 
 
