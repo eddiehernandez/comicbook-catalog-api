@@ -86,10 +86,10 @@ const registerUserHandler = (usersRepo: IUsersRepo): ExpressRouteFunction => {
     
     return (req: Request, res: Response) => {
         const { email, password } = req.body;
-        if ((!email) || (!password))
+        if ((!email) || (!password) || (!validEmail(email)) || (!validPassword(password)))
             return res.status(400).json({
                 code: '400',
-                message: 'Bad Request: Email and Password are required.'
+                message: 'Bad Request: Email and Password are missing or invalid.'
             });
         
     
@@ -134,10 +134,6 @@ const registerUserHandler = (usersRepo: IUsersRepo): ExpressRouteFunction => {
 
 //internal function
 const signJWT = (config: IConfig, user: IUser, callback: (error: Error | null, token: string | null) => void): void => {
-    const timeNow = new Date().getTime();
-    const expirationTime = timeNow + Number(config.token.expireTime) * 100000; // time in ms
-    const expirationTimeInSecs = Math.floor(expirationTime / 1000);
-
 
     try {
         jwt.sign({
@@ -147,7 +143,7 @@ const signJWT = (config: IConfig, user: IUser, callback: (error: Error | null, t
         {
             issuer: config.token.issuer,
             algorithm: 'HS256',
-            expiresIn: expirationTimeInSecs
+            expiresIn: config.token.expireTime
         },
         (error, token) => {
             if (error) {
@@ -169,4 +165,13 @@ const signJWT = (config: IConfig, user: IUser, callback: (error: Error | null, t
 
 }
 
-export { getAllUsersHandler, registerUserHandler, loginUserHandler };
+const validEmail = (email: string): boolean => {
+    return (new RegExp(/^\S+@\S+\.\S+$/)).test(email);
+}
+
+const validPassword = (password: string): boolean => {
+    // Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character
+    return (new RegExp(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/)).test(password);
+}
+
+export { getAllUsersHandler, registerUserHandler, loginUserHandler, validEmail, validPassword };

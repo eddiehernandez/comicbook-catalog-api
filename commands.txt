@@ -22,18 +22,23 @@
     npm install bcryptjs jsonwebtoken
     npm i -D @types/jsonwebtoken @types/bcryptjs
     npm i -D dotenv @types/dotenv
+    npm i -D jest ts-jest @types/jest    
 
 // Add the following scripts to package.json
   "scripts": {
     "build": "tsc -p .",
     "dev": "ts-node-dev --respawn --pretty --transpile-only src/app.ts",    
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "test": "jest"
   },
 
 // Initialize tsconfig
     sudo npm i -g typescript
     tsc --version
     tsc --init
+
+// Create Jest configuration file
+    npx ts-jest config:init
 
 // In tsconfig.json set the following:
     "outDir": "./dist",

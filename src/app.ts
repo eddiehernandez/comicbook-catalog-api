@@ -20,7 +20,7 @@ export default (config: IConfig, usersRepo: IUsersRepo, comicsRepo: IComicsRepo)
     var options = {
         customCss: '.swagger-ui .topbar { display: none }'
       };
-    app.use('/api/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+    app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
 
     app.get('*', (req: Request, res: Response) => {
         res.status(404).json({

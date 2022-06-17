@@ -8,7 +8,7 @@ Features Used:
 * Logging?
 * PROD/DEV Settings?
 * Database Repos: InMemory (default), MongoDb (coming soon), MySQL (coming soon)
-* Jest Test Suite (coming soon)
+* Jest / Supertest Integration and Unit Testing
 * Versioning (coming soon)
 * CI/CD Heroku (pipelines coming soon)
 
