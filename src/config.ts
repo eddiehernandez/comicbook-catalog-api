@@ -1,6 +1,6 @@
 import IConfig from './models/IConfig';
-import dotenv from 'dotenv'
-dotenv.config();
+// import dotenv from 'dotenv'
+// dotenv.config();
 
 const PORT: number = parseInt(<string> process.env.PORT, 10) || 3000;
 const TOKEN_EXPIRETIME: number = parseInt(<string> process.env.TOKEN_EXPIRETIME_SECS, 10) || 3600;
