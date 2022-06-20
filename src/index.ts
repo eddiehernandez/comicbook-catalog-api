@@ -1,3 +1,6 @@
+import config from './config';
+import { usersRepo, comicsRepo } from './repos';
+
 import express from 'express';
 const app = express()
 const PORT : string|number = process.env.PORT || 5000;
