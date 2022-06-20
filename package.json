@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc -p .",
     "dev": "ts-node-dev --watch \"src/*.yaml\" --respawn --pretty --transpile-only src/server.ts",
-    "start": "node dist/server.js",
+    "start-old": "node dist/server.js",
+    "start": "ts-node src/server.ts",
     "test": "jest --verbose",
     "test:watch": "jest --verbose --watch"
   },
