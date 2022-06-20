@@ -5,9 +5,9 @@ import { usersRepo, comicsRepo } from './repos';
 import text from './test';
 
 import express from 'express';
-const app = express()
+// const app = express()
 console.log(config.port);
-// const app = application(config, usersRepo, comicsRepo);
+const app = application(config, usersRepo, comicsRepo);
 const PORT : string|number = process.env.PORT || 5000;
 
 app.use("*",(req, res) =>{
