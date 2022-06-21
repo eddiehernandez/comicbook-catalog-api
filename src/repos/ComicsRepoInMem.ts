@@ -34,7 +34,6 @@ export default class ComicsRepoInMem implements IComicsRepo {
     }
 
     getAllComics(userId: string): IComic[] {
-        console.log(`userId = ${userId}`);
         return this._comics.filter(x => x.userId === userId);
     }
 

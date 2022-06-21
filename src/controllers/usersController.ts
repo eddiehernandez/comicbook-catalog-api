@@ -6,6 +6,7 @@ import jwt from 'jsonwebtoken';
 import IConfig from 'models/IConfig';
 import IUsersRepo from 'repos/IUsersRepo';
 import { ExpressRouteFunction } from '../types';
+import Logger from '../utils/Logger';
 
 
 const getAllUsersHandler = (usersRepo: IUsersRepo): ExpressRouteFunction => {
@@ -52,8 +53,7 @@ const loginUserHandler = (config: IConfig, usersRepo: IUsersRepo): ExpressRouteF
             //generate token
             signJWT(config, user, (err, token) => {
                 if (err){
-                    console.log('Unable to sign token');
-                    console.log(err);
+                    Logger.error('Unable to sign token', err);
                     return res.status(401).json({
                         code: '401',
                         message: 'Unauthorized',
@@ -158,7 +158,7 @@ const signJWT = (config: IConfig, user: IUser, callback: (error: Error | null, t
         })
     }
     catch (error){
-        console.log(error);
+        Logger.error('Error signing jwt', error);
         callback(<Error> error, null);
 
     }

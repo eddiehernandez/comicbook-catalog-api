@@ -28,7 +28,6 @@ const getComicByIdHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
 
 const getAllComicsHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
     return ( req: Request, res: Response) => {
-        console.log('here!');
         try {
             const userId: string = res.locals.jwt.email;
             const comicsResponse = comicsRepo.getAllComics(userId);
@@ -39,7 +38,6 @@ const getAllComicsHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
 
         }
         catch (err){
-            console.log(err);
             return res.status(500).json({
                 code: '500',
                 message: 'Unexpected error',

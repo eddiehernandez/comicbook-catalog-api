@@ -3,16 +3,15 @@ A simple Comicbook API to manage your valuable collection!
 
 Features Used:
 * Typescript
-* Swagger UI Documentation (or other?)
+* Swagger UI Documentation
 * JWT Authentication
-* Logging?
 * PROD/DEV Settings?
 * Database Repos: InMemory (default), MongoDb (coming soon), MySQL (coming soon)
 * Jest / Supertest Integration and Unit Testing
 * Versioning (coming soon)
-* CI/CD Heroku (pipelines coming soon)
+* CI/CD Heroku
 
 Heroku Live Demo:
-https://comicbook-catalog-api.herokuapp.com/
+https://comicbook-catalog-api.herokuapp.com/swagger
 
 
