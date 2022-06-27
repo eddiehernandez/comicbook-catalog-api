@@ -1,5 +1,5 @@
 import IComic from "models/IComic";
-import IComicsRepo from "./IComicsRepo";
+import IComicsRepo from "../IComicsRepo";
 
 
 export default class ComicsRepoInMem implements IComicsRepo {

@@ -1,4 +1,4 @@
-import config from '../../src/config';
+import config from '../../src/startup/config';
 import application from '../../src/app';
 import {usersRepo, comicsRepo}  from '../../src/repos';
 import request from 'supertest';

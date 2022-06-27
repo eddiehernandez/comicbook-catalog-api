@@ -1,4 +1,4 @@
-import IConfig from './models/IConfig';
+import IConfig from '../models/IConfig';
 import dotenv from 'dotenv'
 dotenv.config();
 

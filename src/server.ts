@@ -1,4 +1,4 @@
-import config from './config';
+import config from './startup/config';
 import application from './app';
 import {usersRepo, comicsRepo}  from './repos';
 import Logger from './utils/Logger';

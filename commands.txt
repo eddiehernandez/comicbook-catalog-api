@@ -45,3 +45,8 @@
     "rootDir": "./src", 
     "moduleResolution": "node",
     "baseUrl": "./src",
+
+
+// Add mongodb support
+    npm i mongoose
+    npm i -D @types/mongoose
