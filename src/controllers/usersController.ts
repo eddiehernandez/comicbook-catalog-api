@@ -9,9 +9,9 @@ import { ExpressRouteFunction } from '../types';
 import Logger from '../utils/Logger';
 
 
-const getAllUsersHandler = (usersRepo: IUsersRepo): ExpressRouteFunction => {
-    return (req: Request, res: Response) => {
-        const users = usersRepo.getAllUsers();
+const getAllUsersHandler = (usersRepo: IUsersRepo): any => {
+    return async (req: Request, res: Response) => {
+        const users = await usersRepo.getAllUsers();
         return res.json({
             users,
             count: users.length 
@@ -20,9 +20,9 @@ const getAllUsersHandler = (usersRepo: IUsersRepo): ExpressRouteFunction => {
 }
 
 
-const loginUserHandler = (config: IConfig, usersRepo: IUsersRepo): ExpressRouteFunction => {
+const loginUserHandler = (config: IConfig, usersRepo: IUsersRepo): any => {
 
-    return (req: Request, res: Response) => {
+    return async (req: Request, res: Response) => {
         const { email, password } = req.body;
     
         // validate email and pasword
@@ -33,7 +33,7 @@ const loginUserHandler = (config: IConfig, usersRepo: IUsersRepo): ExpressRouteF
             });
     
         try {
-            const user = usersRepo.getUserByEmail(email);
+            const user = await usersRepo.getUserByEmail(email);
     
             //validate if user exists
             if (!user)
@@ -82,9 +82,9 @@ const loginUserHandler = (config: IConfig, usersRepo: IUsersRepo): ExpressRouteF
 }
 
 
-const registerUserHandler = (usersRepo: IUsersRepo): ExpressRouteFunction => {
+const registerUserHandler = (usersRepo: IUsersRepo): any => {
     
-    return (req: Request, res: Response) => {
+    return async (req: Request, res: Response) => {
         const { email, password } = req.body;
         if ((!email) || (!password) || (!validEmail(email)) || (!validPassword(password)))
             return res.status(400).json({
@@ -93,14 +93,14 @@ const registerUserHandler = (usersRepo: IUsersRepo): ExpressRouteFunction => {
             });
         
     
-        const userFound: IUser | undefined = usersRepo.getUserByEmail(email);
+        const userFound: IUser | undefined = await usersRepo.getUserByEmail(email);
         if (userFound)
             return res.status(409).json({
                 code: '409',
                 message: `User with email: ${email} already exists.`
             })
        
-        bcryptjs.hash(password, 10, (err, hash) => {
+        bcryptjs.hash(password, 10, async (err, hash) => {
             if (err)
                 return res.status(500).json({
                     code: '500',
@@ -114,7 +114,7 @@ const registerUserHandler = (usersRepo: IUsersRepo): ExpressRouteFunction => {
             };
     
             try {
-                const newUser = usersRepo.addUser(user);
+                const newUser = await usersRepo.addUser(user);
                 return res.status(201).send({
                     email: newUser.email,
                     password: '###############'
