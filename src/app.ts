@@ -6,19 +6,24 @@ import IConfig from 'models/IConfig';
 import IUsersRepo from 'repos/IUsersRepo';
 import IComicsRepo from 'repos/IComicsRepo';
 import Logger from './utils/Logger';
+import dotenv from 'dotenv';
 
 export default (config: IConfig, usersRepo: IUsersRepo, comicsRepo: IComicsRepo): Application => {
 
+    dotenv.config();
     const app: Application = express();
 
     /** Log the request */
     app.use((req, res, next) => {
         /** Log the req */
-        Logger.info(`METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
-
+        const env: string = <string> process.env.NODE_ENV;
+        if (env != 'dev'){
+            Logger.info(`METHOD: [${req.method}] - URL: [${req.url}] - IP: [${req.socket.remoteAddress}]`);
+        }
         res.on('finish', () => {
             /** Log the res */
-            Logger.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
+            if (env != 'dev')
+                Logger.info(`METHOD: [${req.method}] - URL: [${req.url}] - STATUS: [${res.statusCode}] - IP: [${req.socket.remoteAddress}]`);
         })
         next();
     });

@@ -25,7 +25,7 @@ export default class UsersRepoMongoDb implements IUsersRepo {
 
     }
 
-    async getAllUsersAsync(): Promise<IUser[]> {
+    async getAllUsers(): Promise<IUser[]> {
         try {
             await connect(this._mongoUri);
             const usersFound = await this._UserModel.find().exec();
@@ -38,25 +38,16 @@ export default class UsersRepoMongoDb implements IUsersRepo {
         }
     }
 
-    getAllUsers(): IUser[] {
-        throw 'not implemented';
-    }
-
-    addUser(user: IUser): IUser {
-        throw 'not implemented';
-    }
-
-    async addUserAsync(user: IUser): Promise<IUser> {
+    async addUser(user: IUser): Promise<IUser> {
         try {
             await connect(this._mongoUri);
             const newUser: IUser = await this._UserModel.create(user);
             await disconnect();
 
             const userResDTO: IUser = {
-                email: newUser.email,
-                password: newUser.password
+                email: newUser?.email,
+                password: newUser?.password
             }
-            Logger.info('new user added = ', userResDTO)
             return userResDTO;                
         }
         catch (err){
@@ -65,22 +56,16 @@ export default class UsersRepoMongoDb implements IUsersRepo {
         }       
     }
 
-    getUserByEmail(email: string): IUser {
-
-        throw 'not implemented';
-
-    }
-
-    async getUserByEmailAsync(email: string): Promise<IUser> {
+    async getUserByEmail(email: string): Promise<IUser | undefined> {
         try {
             await connect(this._mongoUri);
             const userFound = await this._UserModel.findOne({email: email}).exec();
             await disconnect();
+            if (!userFound) return undefined;
             const user: IUser = {
-                email: userFound.email,
-                password: userFound.password
+                email: userFound?.email,
+                password: userFound?.password
             };
-            Logger.info('user found', user);
             return user;            
         }
         catch (err){
@@ -89,13 +74,11 @@ export default class UsersRepoMongoDb implements IUsersRepo {
         }
     }
 
-
     async deleteUserByEmail(email: string): Promise<any> {
         try {
             await connect(this._mongoUri);
             const response = await this._UserModel.deleteMany({email: email});
             await disconnect();
-            Logger.info('deleted users', response);
             return response;
         }
         catch (err){

@@ -11,30 +11,23 @@ export default class UsersRepoInMem implements IUsersRepo {
 
     }
 
-    addUserAsync(user: IUser): Promise<IUser> {
-        throw new Error("Method not implemented.");
-    }
-    getUserByEmailAsync(email: string): Promise<IUser> {
-        throw new Error("Method not implemented.");
-    }
-    getAllUsersAsync(): Promise<IUser[]> {
-        throw new Error("Method not implemented.");
-    }
-    deleteUserByEmail(email: string): Promise<any> {
-        throw new Error("Method not implemented.");
-    }
-
-    getAllUsers(): IUser[] {
-        return this._users;
-    }
-
-    addUser(user: IUser): IUser {
+    async addUser(user: IUser): Promise<IUser> {
         this._users.push(user);
         return user;
     }
-
-    getUserByEmail(email: string): IUser | undefined {
+    async getUserByEmail(email: string): Promise<IUser | undefined> {
         return this._users.find(x => x.email === email);
+    }
+    async getAllUsers(): Promise<IUser[]> {
+        return this._users;
+    }
+    async deleteUserByEmail(email: string): Promise<any> {
+        this._users = this._users.filter(x => x.email !== email);
+        const response = {
+            status: 'deletion successful',
+            email: email
+        }
+        return response;
     }
 
 }

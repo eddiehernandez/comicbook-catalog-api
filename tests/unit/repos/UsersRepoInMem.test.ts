@@ -1,4 +1,5 @@
-import UsersRepoMongoDb from '../../../src/repos/mongoDbRepo/UsersRepoMongoDb'
+// import UsersRepoMongoDb from '../../../src/repos/mongoDbRepo/UsersRepoMongoDb'
+import UsersRepoInMem from '../../../src/repos/inMemoryRepo/UsersRepoInMem';
 import dotenv from 'dotenv'
 dotenv.config();
 
@@ -10,7 +11,7 @@ dotenv.config();
         email: testEmail,
         password: testPassword
     };
-    const usersRepo = new UsersRepoMongoDb(<string> process.env.MONGO_URI);
+    const usersRepo = new UsersRepoInMem();
 
     jest.setTimeout(10000);
 
@@ -37,11 +38,11 @@ dotenv.config();
         expect(userFound?.email).toBe(testEmail);
     });
 
-    test ('find invalid email returns undefined', async() => {
+    test ('find invalid email return undefined', async () => {
         const badEmail = 'hello123@me.com';
         const response = await usersRepo.deleteUserByEmail(badEmail); //make sure this user does not exist
         const userFound = await usersRepo.getUserByEmail(testEmail);
-        expect(userFound).toBe(undefined);   
+        expect(userFound).toBe(undefined);       
     })
 
     afterEach(async () => {
