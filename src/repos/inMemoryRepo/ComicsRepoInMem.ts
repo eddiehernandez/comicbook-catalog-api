@@ -33,11 +33,11 @@ export default class ComicsRepoInMem implements IComicsRepo {
 
     }
 
-    getAllComics(userId: string): IComic[] {
+    async getAllComics(userId: string): Promise<IComic[]> {
         return this._comics.filter(x => x.userId === userId);
     }
 
-    addComic(comic: IComic, userId: string): IComic {
+    async addComic(comic: IComic, userId: string): Promise<IComic> {
         const uniqueId = new Date().getTime();
         comic.id = uniqueId.toString();
         comic.userId = userId;
@@ -45,18 +45,18 @@ export default class ComicsRepoInMem implements IComicsRepo {
         return comic;
     }
 
-    getComicById(id: string, userId: string): IComic | undefined {
+    async getComicById(id: string, userId: string): Promise<IComic | undefined> {
         return this._comics.find(x => ((x.id === id) && (x.userId === userId)));       
     }
 
-    deleteComic(id: string, userId: string): void {
+    async deleteComic(id: string, userId: string): Promise<void> {
         if (!this.getComicById(id, userId))
             throw `Comic ${id} not found!`;
             
         this._comics = this._comics.filter(x => !((x.id === id) && (x.userId === userId)));
     }
 
-    updateComic(id: string, userId: string, comic: IComic): IComic {
+    async updateComic(id: string, userId: string, comic: IComic): Promise<IComic> {
 
         if ((!id) || (!comic?.id))
             throw 'Missing id and/or comic to update';

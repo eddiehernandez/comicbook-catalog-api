@@ -51,7 +51,7 @@ export default class UsersRepoMongoDb implements IUsersRepo {
             return userResDTO;                
         }
         catch (err){
-            Logger.error('Error trying to get all users async', err);
+            Logger.error('Error trying to add user', err);
             throw err;
         }       
     }

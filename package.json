@@ -11,7 +11,7 @@
     "test:verbose": "jest --verbose",
     "test:watch": "jest --verbose --watch",
     "coverage": "jest --coverage",
-    "test:UsersRepoMongoDb": "jest UsersRepoMongoDb.test.ts"
+    "test:ComicsRepoMongoDb": "jest --verbose ComicsRepoMongoDb.test.ts"
   },
   "keywords": [],
   "author": "Eddie Hernandez",
