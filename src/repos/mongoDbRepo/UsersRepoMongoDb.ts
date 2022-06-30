@@ -2,89 +2,119 @@ import IUser from "models/IUser";
 import IUsersRepo from "../IUsersRepo";
 import mongoose, { model, Schema, connect, disconnect } from "mongoose";
 import Logger from "../../utils/Logger";
+import { ObjectId } from "mongodb";
+import * as mongoDB from "mongodb";
+
+class MongoDbUser {
+
+    private _id?: ObjectId;
+    private email: string;
+    private password: string;
+
+
+    constructor (_id: ObjectId, email: string, password: string){
+        this._id = _id;
+        this.email = email;
+        this.password = password;
+    }
+}
 
 export default class UsersRepoMongoDb implements IUsersRepo {
 
+    private _collectionName: string = 'users';
+    private _mongoHost: string;
+    private _mongoDbName: string;
+
+    private _client: mongoDB.MongoClient;
+    private _collections: { users? : mongoDB.Collection } = {};
+
+    private async connectToDb () {
+        await this._client.connect();
+        const db: mongoDB.Db = this._client.db(this._mongoDbName);
+        const usersCollection: mongoDB.Collection = db.collection(this._collectionName);
+        this._collections.users = usersCollection;
+        // Logger.info(`Successfully connected to database: ${db.databaseName} and collection: ${usersCollection.collectionName}`);
+    }
+
+    private async disconnectDb () {
+        await this._client.close();
+    }
 
 
-    private _userSchema: Schema;
-    private _UserModel: any;
-    private _mongoUri: string;
-
-    constructor (mongoUri: string){
-
-        
-        this._userSchema = new Schema<IUser>({
-            email: { type: String, required: true },
-            password: { type: String, required: true }
-        });
-
-        this._UserModel = model<IUser>('User', this._userSchema);
-
-        this._mongoUri = mongoUri;
-
+    constructor (mongoHost: string, mongoDbName: string){
+        this._mongoHost = mongoHost;
+        this._mongoDbName = mongoDbName;
+        this._client = new mongoDB.MongoClient(this._mongoHost);
     }
 
     async getAllUsers(): Promise<IUser[]> {
         try {
-            await connect(this._mongoUri);
-            const usersFound = await this._UserModel.find().exec();
-            await disconnect();
-            return usersFound;                
+            await this.connectToDb(); 
+            let users = (await this._collections.users?.find({}).toArray()) as unknown as IUser[];
+            users = users.map(x => {
+                return {
+                    email: x.email,
+                    password: x.password
+                }
+            });
+            return users; 
         }
         catch (err){
             Logger.error('Error trying to get all users async', err);
             throw err;
         }
+        finally{
+            await this.disconnectDb();
+        }
     }
 
     async addUser(user: IUser): Promise<IUser> {
         try {
-            await connect(this._mongoUri);
-            const newUser: IUser = await this._UserModel.create(user);
-            await disconnect();
-
-            const userResDTO: IUser = {
-                email: newUser?.email,
-                password: newUser?.password
-            }
-            return userResDTO;                
+            await this.connectToDb();
+            const result = await this._collections.users?.insertOne(user);
+            if (result?.acknowledged)
+                return user;
+            throw new Error('Error trying to add new user.');
         }
         catch (err){
             Logger.error('Error trying to add user', err);
             throw err;
-        }       
+        }     
+        finally{
+            await this.disconnectDb();
+        }  
     }
 
     async getUserByEmail(email: string): Promise<IUser | undefined> {
         try {
-            await connect(this._mongoUri);
-            const userFound = await this._UserModel.findOne({email: email}).exec();
-            await disconnect();
+            await this.connectToDb(); 
+            let userFound = (await this._collections.users?.findOne({ email: email })) as unknown as IUser;
             if (!userFound) return undefined;
-            const user: IUser = {
-                email: userFound?.email,
-                password: userFound?.password
-            };
-            return user;            
+            return {
+                email: userFound.email,
+                password: userFound.password
+            }
         }
         catch (err){
-            Logger.error(`Error trying to get user with email ${email}`, err);
+            Logger.error('Error trying to get all users async', err);
             throw err;
+        }
+        finally{
+            await this.disconnectDb();
         }
     }
 
-    async deleteUserByEmail(email: string): Promise<any> {
+    async deleteUserByEmail(email: string): Promise<void> {
         try {
-            await connect(this._mongoUri);
-            const response = await this._UserModel.deleteMany({email: email});
-            await disconnect();
-            return response;
+            await this.connectToDb();
+            const result = await this._collections.users?.deleteOne({ email: email });
         }
         catch (err){
-            Logger.error(`Error trying to delete users with email ${email}`, err);
             throw err;
-        }
+        }     
+        finally{
+            await this.disconnectDb();
+        }  
     }
 
 }

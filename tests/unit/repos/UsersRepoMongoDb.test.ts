@@ -4,13 +4,13 @@ dotenv.config();
 
 
 // describe('when getting all users', async () => {
-    const testEmail = 'test@me.com';
+    const testEmail = 'jest-test@me.com';
     const testPassword = 'test12345';
     const user = {
         email: testEmail,
         password: testPassword
     };
-    const usersRepo = new UsersRepoMongoDb(<string> process.env.MONGO_URI);
+    const usersRepo = new UsersRepoMongoDb(<string> process.env.MONGO_HOST, <string> process.env.MONGO_DB_NAME);
 
     jest.setTimeout(10000);
 
