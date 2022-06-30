@@ -2,97 +2,130 @@ import IComic from "models/IComic";
 import IComicsRepo from "../IComicsRepo";
 import mongoose, { model, Schema, connect, disconnect, Types } from "mongoose";
 import Logger from "../../utils/Logger";
-
-interface IMongoComic extends IComic {
-    _id?: Types.ObjectId
-}
-
+import { ObjectId } from "mongodb";
+import * as mongoDB from "mongodb";
 
 export default class ComicsRepoMongoDb implements IComicsRepo {
 
-    private _comicSchema: Schema;
-    private _ComicModel: any;
-    private _mongoUri: string;
+    private _collectionName: string = 'comics';
+    private _mongoDbName: string;
 
-    constructor (mongoUri: string) {
-        this._mongoUri = mongoUri;
+    private _client: mongoDB.MongoClient;
+    private _collections: { comics? : mongoDB.Collection } = {};
 
-        this._comicSchema = new Schema<IMongoComic>({
-            id: { type: String, required: false},
-            _id: { type: Schema.Types.ObjectId, required: false},
-            userId: { type: String, required: true },
-            issueNumber: { type: String, required: true },    
-            title: { type: String, required: true },
-            writer: { type: String, required: true },
-            illustrator: { type: String, required: true },
-            publisher: { type: String, required: true }
-        });
+    private async connectToDb () {
+        await this._client.connect();
+        const db: mongoDB.Db = this._client.db(this._mongoDbName);
+        const comicsCollection: mongoDB.Collection = db.collection(this._collectionName);
+        this._collections.comics = comicsCollection;
+        // Logger.info(`Successfully connected to database: ${db.databaseName} and collection: ${comicsCollection.collectionName}`);
+    }
 
-        this._ComicModel = model<IMongoComic>('Comic', this._comicSchema);
+    private async disconnectDb () {
+        await this._client.close();
+    }
+
+    constructor (mongoHost: string, mongoDbName: string){
+        this._mongoDbName = mongoDbName;
+        this._client = new mongoDB.MongoClient(mongoHost);
     }
 
     async getAllComics(userId: string): Promise<IComic[]> {
         try {
-            await connect(this._mongoUri);
-            const comicsFound = await this._ComicModel.find({userId: userId});
-            await disconnect();
-            // Logger.info('comics found!', comicsFound);
-            return comicsFound;                
+            await this.connectToDb(); 
+            let comics = (await this._collections.comics?.find({ userId: userId }).toArray()) as unknown as IComic[];
+            return comics; 
         }
         catch (err){
             Logger.error('Error trying to get all comics async', err);
             throw err;
         }
+        finally{
+            await this.disconnectDb();
+        }
     }
 
-    async addComic(comic: IMongoComic, userId: string): Promise<IComic> {
+    async addComic(comic: IComic, userId: string): Promise<IComic> {
         try {
-            await connect(this._mongoUri);        
-            comic.userId = userId; //associating comic to userId
-            const newComic = await this._ComicModel.create(comic);
-            await disconnect();
-
-            const comicResponseDTO: IComic = {
-                id: newComic._id.toString(),
-                userId: newComic.userId,
-                issueNumber: newComic.issueNumber,
-                title: newComic.title,
-                writer: newComic.writer,
-                illustrator: newComic.illustrator,
-                publisher: newComic.publisher                  
+            await this.connectToDb();
+            comic.userId = userId;
+            const result = await this._collections.comics?.insertOne(comic);
+            if (result?.acknowledged && result?.insertedId){
+                comic.id = result.insertedId.toString();
+                // Logger.info('inserted comic =>', comic);
+                return comic;
             }
-
-            Logger.info('comic created', comicResponseDTO);
-            return comicResponseDTO;                
+            throw new Error('Error trying to add new comic.');
         }
         catch (err){
-            Logger.error('Error trying to create new comic.', err);
+            Logger.error('Error trying to add comic', err);
             throw err;
         }     
+        finally{
+            await this.disconnectDb();
+        } 
     }
 
     async getComicById(id: string, userId: string): Promise<IComic | undefined> {
-        throw 'Not Implemented';     
+        try {
+            await this.connectToDb(); 
+            let comicFound = (await this._collections.comics?.findOne({ _id: new ObjectId(id), userId: userId })) as unknown as IComic;
+            if (!comicFound) return undefined;
+            comicFound.id = id;
+            // Logger.info('comic found => ', comicFound);
+            return comicFound;
+        }
+        catch (err){
+            Logger.error('Error trying to get all users async', err);
+            throw err;
+        }
+        finally{
+            await this.disconnectDb();
+        }   
     }
 
     async deleteComic(id: string, userId: string): Promise<void> {
         try {
-            await connect(this._mongoUri);      
-            const response = await this._ComicModel.deleteOne({
-                // _id: new mongoose.Types.ObjectId(id),
-                _id: id,
-                userId: userId
-            });
-            await disconnect();
-            Logger.info('delete response', response);
+            await this.connectToDb();
+            const result = await this._collections.comics?.deleteOne({ _id: new ObjectId(id), userId: userId });
+            // Logger.info('deleted comic result =>', result);
         }
         catch (err){
             throw err;
-        }
+        }     
+        finally{
+            await this.disconnectDb();
+        } 
+
     }
 
     async updateComic(id: string, userId: string, comic: IComic): Promise<IComic> {
-        throw 'Not Implemented';
+        try {
+            await this.connectToDb();
+
+            const query = {
+                _id: new ObjectId(id),
+                userId: userId
+            }
+
+            const result = await this._collections.comics?.updateOne(query, {
+                $set: comic
+            });
+            // Logger.info('updated comic => ', result);
+
+            if (result?.modifiedCount === 1)
+                return comic;
+            else
+                throw new Error(`Unable to update comic ${id}`);
+
+        }
+        catch (err){
+            Logger.error('Error trying to add comic', err);
+            throw err;
+        }     
+        finally{
+            await this.disconnectDb();
+        } 
 
     }
 

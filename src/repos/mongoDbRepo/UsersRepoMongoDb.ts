@@ -2,27 +2,11 @@ import IUser from "models/IUser";
 import IUsersRepo from "../IUsersRepo";
 import mongoose, { model, Schema, connect, disconnect } from "mongoose";
 import Logger from "../../utils/Logger";
-import { ObjectId } from "mongodb";
 import * as mongoDB from "mongodb";
-
-class MongoDbUser {
-
-    private _id?: ObjectId;
-    private email: string;
-    private password: string;
-
-
-    constructor (_id: ObjectId, email: string, password: string){
-        this._id = _id;
-        this.email = email;
-        this.password = password;
-    }
-}
 
 export default class UsersRepoMongoDb implements IUsersRepo {
 
     private _collectionName: string = 'users';
-    private _mongoHost: string;
     private _mongoDbName: string;
 
     private _client: mongoDB.MongoClient;
@@ -40,11 +24,9 @@ export default class UsersRepoMongoDb implements IUsersRepo {
         await this._client.close();
     }
 
-
     constructor (mongoHost: string, mongoDbName: string){
-        this._mongoHost = mongoHost;
         this._mongoDbName = mongoDbName;
-        this._client = new mongoDB.MongoClient(this._mongoHost);
+        this._client = new mongoDB.MongoClient(mongoHost);
     }
 
     async getAllUsers(): Promise<IUser[]> {
