@@ -12,6 +12,6 @@
     "strict": true,                                      /* Enable all strict type-checking options. */
     "skipLibCheck": true   
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "tests/integration/users.test.ts", "tests/integration/app.test.ts", "tests/unit/controllers"],
   "exclude": ["node_modules"]
 }

@@ -7,28 +7,28 @@ export default class Logger {
 
     public static info (message: string, object?: any) {
         if (object)
-            console.info(`[${this.getTimeStamp()}] ${message}`, object)
+            console.info(`[INFO] [${this.getTimeStamp()}] ${message}`, object)
         else
-            console.info(`[${this.getTimeStamp()}] ${message}`)
+            console.info(`[INFO] [${this.getTimeStamp()}] ${message}`)
     }   
 
     public static warn (message: string, object?: any) {
         if (object)
-            console.warn(`[${this.getTimeStamp()}] ${message}`, object)
+            console.warn(`[WARN] [${this.getTimeStamp()}] ${message}`, object)
         else
-            console.warn(`[${this.getTimeStamp()}] ${message}`)
+            console.warn(`[WARN] [${this.getTimeStamp()}] ${message}`)
     }   
     public static error (message: string, object?: any) {
         if (object)
-            console.error(`[${this.getTimeStamp()}] ${message}`, object)
+            console.error(`[ERR] [${this.getTimeStamp()}] ${message}`, object)
         else
-            console.error(`[${this.getTimeStamp()}] ${message}`)
+            console.error(`[ERR] [${this.getTimeStamp()}] ${message}`)
     }   
     public static debug (message: string, object?: any) {
         if (object)
-            console.debug(`[${this.getTimeStamp()}] ${message}`, object)
+            console.debug(`[DEBUG] [${this.getTimeStamp()}] ${message}`, object)
         else
-            console.debug(`[${this.getTimeStamp()}] ${message}`)
+            console.debug(`[DEBUG] [${this.getTimeStamp()}] ${message}`)
     }   
 
 }

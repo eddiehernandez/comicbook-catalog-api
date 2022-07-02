@@ -1,4 +1,4 @@
-import { validEmail, validPassword } from '../../controllers/usersController'
+import { validEmail, validPassword } from '../../../src/controllers/usersController';
 
 describe('email validations', () => {
 

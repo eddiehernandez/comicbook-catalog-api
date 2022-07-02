@@ -36,7 +36,7 @@ export default class UsersRepoMongoDb implements IUsersRepo {
             users = users.map(x => {
                 return {
                     email: x.email,
-                    password: x.password
+                    password: '********'
                 }
             });
             return users; 

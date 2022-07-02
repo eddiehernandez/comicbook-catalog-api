@@ -4,6 +4,8 @@ import mongoose, { model, Schema, connect, disconnect, Types } from "mongoose";
 import Logger from "../../utils/Logger";
 import { ObjectId } from "mongodb";
 import * as mongoDB from "mongodb";
+import MongoComic from "./MongoComic";
+import ComicDirector from "../../utils/ComicDirector"
 
 export default class ComicsRepoMongoDb implements IComicsRepo {
 
@@ -33,7 +35,8 @@ export default class ComicsRepoMongoDb implements IComicsRepo {
     async getAllComics(userId: string): Promise<IComic[]> {
         try {
             await this.connectToDb(); 
-            let comics = (await this._collections.comics?.find({ userId: userId }).toArray()) as unknown as IComic[];
+            let mongoComics = (await this._collections.comics?.find({ userId: userId }).toArray()) as unknown as MongoComic[];
+            const comics: IComic[] = mongoComics.map(c => { return ComicDirector.buildComic(c) } );
             return comics; 
         }
         catch (err){
@@ -50,11 +53,8 @@ export default class ComicsRepoMongoDb implements IComicsRepo {
             await this.connectToDb();
             comic.userId = userId;
             const result = await this._collections.comics?.insertOne(comic);
-            if (result?.acknowledged && result?.insertedId){
-                comic.id = result.insertedId.toString();
-                // Logger.info('inserted comic =>', comic);
-                return comic;
-            }
+            if (result?.acknowledged && result?.insertedId)
+                return ComicDirector.buildComic(comic);
             throw new Error('Error trying to add new comic.');
         }
         catch (err){
@@ -71,13 +71,12 @@ export default class ComicsRepoMongoDb implements IComicsRepo {
             await this.connectToDb(); 
             let comicFound = (await this._collections.comics?.findOne({ _id: new ObjectId(id), userId: userId })) as unknown as IComic;
             if (!comicFound) return undefined;
-            comicFound.id = id;
-            // Logger.info('comic found => ', comicFound);
-            return comicFound;
+            return ComicDirector.buildComic(comicFound)
         }
         catch (err){
-            Logger.error('Error trying to get all users async', err);
-            throw err;
+            Logger.warn(`Error trying to get user ${id}`, err);
+            return undefined;
+            // throw err;
         }
         finally{
             await this.disconnectDb();
@@ -114,7 +113,7 @@ export default class ComicsRepoMongoDb implements IComicsRepo {
             // Logger.info('updated comic => ', result);
 
             if (result?.modifiedCount === 1)
-                return comic;
+                return ComicDirector.buildComic(comic);
             else
                 throw new Error(`Unable to update comic ${id}`);
 

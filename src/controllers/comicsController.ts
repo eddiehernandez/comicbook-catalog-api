@@ -1,17 +1,18 @@
 import { Request, Response } from 'express';
 import IComic from 'models/IComic';
+import Logger from '../utils/Logger';
 import IComicsRepo from 'repos/IComicsRepo';
 import { ExpressRouteFunction } from '../types';
 
-const getComicByIdHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
-    return ( req: Request, res: Response) => {
+const getComicByIdHandler = (comicsRepo: IComicsRepo): any => {
+    return async ( req: Request, res: Response) => {
 
         const id : string = req.params.id;
-        let comic: IComic | undefined;
 
         try {
             const userId: string = res.locals.jwt.email;
-            comic = comicsRepo.getComicById(id, userId);
+            const comic = await comicsRepo.getComicById(id, userId);
+            // Logger.info('comic found =>', comic);
             if (!comic) return res.status(404).json({message: `Comic ${id} not found.`});
             return res.json(comic);        
         }
@@ -26,11 +27,11 @@ const getComicByIdHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
     }
 }
 
-const getAllComicsHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
-    return ( req: Request, res: Response) => {
+const getAllComicsHandler = (comicsRepo: IComicsRepo): any => {
+    return async ( req: Request, res: Response) => {
         try {
             const userId: string = res.locals.jwt.email;
-            const comicsResponse = comicsRepo.getAllComics(userId);
+            const comicsResponse = await comicsRepo.getAllComics(userId);
             return res.json({
                 data: comicsResponse,
                 count: comicsResponse.length
@@ -48,18 +49,19 @@ const getAllComicsHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
 }
 
 
-const deleteComicHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
-    return (req: Request, res: Response) => {
+const deleteComicHandler = (comicsRepo: IComicsRepo): any => {
+    return async (req: Request, res: Response) => {
         try {
             const userId: string = res.locals.jwt.email;
             const id : string = req.params.id;
 
             //validate comic you are trying to delete exists
-            if (!comicsRepo.getComicById(id, userId)) 
+            const comicFound = await comicsRepo.getComicById(id, userId);
+            if (!comicFound) 
                 return res.status(404).json({message: `Comic ${id} not found.`});
 
             //proceed to delete comicbook
-            comicsRepo.deleteComic(id, userId);
+            await comicsRepo.deleteComic(id, userId);
             return res.sendStatus(204);
         }
         catch (err){
@@ -72,8 +74,8 @@ const deleteComicHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
     }
 }
 
-const createComicHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
-    return (req: Request, res: Response) => {
+const createComicHandler = (comicsRepo: IComicsRepo): any => {
+    return async (req: Request, res: Response) => {
         try {
             const userId: string = res.locals.jwt.email;
 
@@ -85,7 +87,7 @@ const createComicHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
                 });
 
             let comic: IComic = body;
-            const response = comicsRepo.addComic(comic, userId);
+            const response = await comicsRepo.addComic(comic, userId);
             return res.status(201).json(response);
         }
         catch (err){
@@ -98,8 +100,8 @@ const createComicHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
     }
 }    
 
-const updateComicHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
-    return (req: Request, res: Response) => {
+const updateComicHandler = (comicsRepo: IComicsRepo): any => {
+    return async (req: Request, res: Response) => {
         try {
             const userId: string = res.locals.jwt.email;
             const id : string = req.params.id;
@@ -111,12 +113,12 @@ const updateComicHandler = (comicsRepo: IComicsRepo): ExpressRouteFunction => {
                 });
 
             const comic: IComic = body;
-
-            if (!comicsRepo.getComicById(id, userId)) 
+            const comicFound = await comicsRepo.getComicById(id, userId);
+            if (!comicFound) 
                 return res.status(404).json({message: `Comic ${id} not found.`});
 
             //proceed to delete comicbook
-            const response = comicsRepo.updateComic(id, userId, comic,);
+            const response = await comicsRepo.updateComic(id, userId, comic,);
             return res.json(response);
         }
         catch (err){

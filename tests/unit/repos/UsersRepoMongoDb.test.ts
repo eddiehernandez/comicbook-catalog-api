@@ -12,7 +12,7 @@ dotenv.config();
     };
     const usersRepo = new UsersRepoMongoDb(<string> process.env.MONGO_HOST, <string> process.env.MONGO_DB_NAME);
 
-    jest.setTimeout(10000);
+    jest.setTimeout(30000);
 
     beforeEach(async () => {
         const response = await usersRepo.deleteUserByEmail(testEmail);
@@ -40,7 +40,7 @@ dotenv.config();
     test ('find invalid email returns undefined', async() => {
         const badEmail = 'hello123@me.com';
         const response = await usersRepo.deleteUserByEmail(badEmail); //make sure this user does not exist
-        const userFound = await usersRepo.getUserByEmail(testEmail);
+        const userFound = await usersRepo.getUserByEmail(badEmail);
         expect(userFound).toBe(undefined);   
     })
 

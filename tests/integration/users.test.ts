@@ -1,19 +1,19 @@
-import config from '../../startup/config';
-import application from '../../app';
-import {usersRepo, comicsRepo}  from '../../repos';
+import config from '../../src/startup/config';
+import application from '../../src/app';
+import {usersRepo, comicsRepo}  from '../../src/repos';
 import request from 'supertest';
 
 const app = application(config, usersRepo, comicsRepo);
 
 
-// describe("HTTP /users endpoint tests", () => {
+describe("HTTP /users endpoint tests", () => {
 
-//     test('GET /users endpoint returns valid results', async () => {
-//         const response = await request(app).get('/users');
-//         expect(response.statusCode).toBe(200);
-//         expect(response.body.count).toBeDefined;
-//         expect(response.body.users).toBeDefined;
-//     })
+    test('GET /users endpoint returns valid results', async () => {
+        const response = await request(app).get('/users');
+        expect(response.statusCode).toBe(200);
+        expect(response.body.count).toBeDefined;
+        expect(response.body.users).toBeDefined;
+    })
 
 
 //     describe('POST /users/register', () => {
@@ -86,4 +86,4 @@ const app = application(config, usersRepo, comicsRepo);
 //     // });
 
 
-// });
+});
